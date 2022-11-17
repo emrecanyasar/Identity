@@ -34,6 +34,9 @@ namespace UdemyIdentity1
 
             services.AddIdentity<AppUser, IdentityRole>(opts =>
             {
+                opts.User.RequireUniqueEmail = true;
+                opts.User.AllowedUserNameCharacters = "abcçdefgðhýijklmnoöpqrsþtuüvwxyzABCDEFGÐHIÝJKLMNOÖPQRSÞTUÜVWXYZ0123456789-._";
+
                 opts.Password.RequiredLength = 4;
                 opts.Password.RequireNonAlphanumeric = false;
                 opts.Password.RequireLowercase = false;
