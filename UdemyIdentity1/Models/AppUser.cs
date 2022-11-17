@@ -4,5 +4,6 @@ namespace UdemyIdentity.Models
 {
     public class AppUser : IdentityUser
     {
+
     }
 }

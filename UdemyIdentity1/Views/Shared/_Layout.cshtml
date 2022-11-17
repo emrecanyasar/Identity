@@ -4,10 +4,35 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
+    <script src='~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js'></script>
+    <script src='~/lib/jquery-validate/jquery.validate.js'></script>
     <script src='~/lib/jquery/jquery.js'></script>
-    <link href='~/lib/twitter-boostrap/css/bootstrap.css' rel="stylesheet">
+    <link href='~/lib/twitter-bootstrap/css/bootstrap.css' rel="stylesheet">
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">CloswWatch</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-item nav-link" asp-action="Home">Ana Sayfa</a>
+                    </li>
+                     <li class="nav-item active">
+                         <a class="nav-item nav-link" asp-action="SignUp">Üye Ol</a>
+                    </li>
+                     <li class="nav-item active">
+                        <a class="nav-item nav-link" asp-action="LogIn">Giriş Yap</a>
+                    </li>
+                </ul>
+               
+            </div>
+        </div>
+    </nav>
+
     <div>
         @RenderBody()
     </div>
