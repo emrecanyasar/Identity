@@ -43,6 +43,7 @@ namespace UdemyIdentity1
                 opts.Password.RequireUppercase = false;
                 opts.Password.RequireDigit = false;
             }).AddPasswordValidator<CustomPasswordValidator>()
+            .AddUserValidator<CustomUserValidator>()
             .AddEntityFrameworkStores<AppIdentityDbContext>();
 
             services.AddMvc(options => options.EnableEndpointRouting = false);
