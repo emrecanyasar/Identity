@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UdemyIdentity.CustomValidation;
 using UdemyIdentity.Models;
 
 namespace UdemyIdentity1
@@ -38,7 +39,8 @@ namespace UdemyIdentity1
                 opts.Password.RequireLowercase = false;
                 opts.Password.RequireUppercase = false;
                 opts.Password.RequireDigit = false;
-            }).AddEntityFrameworkStores<AppIdentityDbContext>();
+            }).AddPasswordValidator<CustomPasswordValidator>()
+            .AddEntityFrameworkStores<AppIdentityDbContext>();
 
             services.AddMvc(options => options.EnableEndpointRouting = false);
             services.AddMvc();
