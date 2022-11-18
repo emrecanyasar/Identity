@@ -12,6 +12,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using UdemyIdentity.CustomValidation;
 using UdemyIdentity.Models;
+using UdemyIdentity.OptionsModels;
+
 
 namespace UdemyIdentity1
 {
@@ -22,7 +24,7 @@ namespace UdemyIdentity1
         {
             this.configuration = configuration;
         }
-
+       
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
@@ -31,7 +33,7 @@ namespace UdemyIdentity1
             {
                 opts.UseSqlServer(configuration["ConnectionStrings:DefaultConnectionString"]);
             });
-
+            
 
             services.AddIdentity<AppUser, IdentityRole>(opts =>
             {
@@ -46,9 +48,9 @@ namespace UdemyIdentity1
             }).AddPasswordValidator<CustomPasswordValidator>()
             .AddUserValidator<CustomUserValidator>()
             .AddErrorDescriber<CustomIdentityErrorDescriber>()
-            .AddEntityFrameworkStores<AppIdentityDbContext>();
+            .AddEntityFrameworkStores<AppIdentityDbContext>().AddDefaultTokenProviders();
 
-
+            
             CookieBuilder cookieBuilder = new CookieBuilder();
 
             cookieBuilder.Name = "MyBlog";
@@ -67,7 +69,7 @@ namespace UdemyIdentity1
             services.AddMvc(options => options.EnableEndpointRouting = false);
             services.AddMvc();
         }
-
+        
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
