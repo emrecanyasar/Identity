@@ -32,22 +32,6 @@ namespace UdemyIdentity1
                 opts.UseSqlServer(configuration["ConnectionStrings:DefaultConnectionString"]);
             });
 
-            CookieBuilder cookieBuilder = new CookieBuilder();
-
-            cookieBuilder.Name = "MyBlog";
-            cookieBuilder.HttpOnly = false;
-            cookieBuilder.SameSite = SameSiteMode.Lax;
-            cookieBuilder.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-
-            services.ConfigureApplicationCookie(opts =>
-            {
-                opts.LoginPath = new PathString("/Home/Login");
-                opts.LogoutPath = new PathString("/Member/LogOut");
-                opts.Cookie = cookieBuilder;
-                opts.SlidingExpiration = true;
-                opts.ExpireTimeSpan = System.TimeSpan.FromDays(60);
-                opts.AccessDeniedPath = new PathString("/Member/AccessDenied");
-            });
 
             services.AddIdentity<AppUser, IdentityRole>(opts =>
             {
@@ -64,6 +48,22 @@ namespace UdemyIdentity1
             .AddErrorDescriber<CustomIdentityErrorDescriber>()
             .AddEntityFrameworkStores<AppIdentityDbContext>();
 
+
+            CookieBuilder cookieBuilder = new CookieBuilder();
+
+            cookieBuilder.Name = "MyBlog";
+            cookieBuilder.HttpOnly = false;
+            cookieBuilder.SameSite = SameSiteMode.Lax;
+            cookieBuilder.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+
+            services.ConfigureApplicationCookie(opts =>
+            {
+                opts.LoginPath = new PathString("/Home/Login");
+                opts.Cookie = cookieBuilder;
+                opts.SlidingExpiration = true;
+                opts.ExpireTimeSpan=System.TimeSpan.FromDays(60);
+            });
+
             services.AddMvc(options => options.EnableEndpointRouting = false);
             services.AddMvc();
         }
@@ -74,8 +74,9 @@ namespace UdemyIdentity1
             app.UseDeveloperExceptionPage();
             app.UseStatusCodePages();
             app.UseStaticFiles();
-            app.UseMvcWithDefaultRoute();
             app.UseAuthentication();
+            app.UseMvcWithDefaultRoute();
+
         }
     }
 }
