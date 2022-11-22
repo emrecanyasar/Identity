@@ -60,7 +60,7 @@ namespace UdemyIdentity1
 
             services.ConfigureApplicationCookie(opts =>
             {
-                opts.LoginPath = new PathString("/Home/Login");
+                opts.LoginPath = new PathString("/Home/LogIn");
                 opts.Cookie = cookieBuilder;
                 opts.SlidingExpiration = true;
                 opts.ExpireTimeSpan=System.TimeSpan.FromDays(60);

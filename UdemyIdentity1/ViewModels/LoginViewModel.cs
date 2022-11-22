@@ -16,4 +16,5 @@ namespace UdemyIdentity.ViewModels
 
         public bool RememberMe { get; set; }
     }
+
 }
