@@ -6,6 +6,11 @@ using Mapster;
 using UdemyIdentity.ViewModels;
 using Mapster;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
+using UdemyIdentity.Enums;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace UdemyIdentity.Controllers
 {
@@ -30,19 +35,43 @@ namespace UdemyIdentity.Controllers
         public IActionResult UserEdit()
         {
             AppUser user=userManager.FindByNameAsync(User.Identity.Name).Result;
+
+
             UserViewModel userViewModel=user.Adapt<UserViewModel>();
+
+            ViewBag.Gender = new SelectList(Enum.GetNames(typeof(Gender)));
+            
             return View(userViewModel);
         }
         [HttpPost]
-        public async Task<IActionResult> UserEdit(UserViewModel userViewModel)
+        public async Task<IActionResult> UserEdit(UserViewModel userViewModel,IFormFile userPicture)
         {
             ModelState.Remove("Password");
+            ViewBag.Gender = new SelectList(Enum.GetNames(typeof(Gender)));
+
             if (ModelState.IsValid)
             {
-                var user = await userManager.FindByNameAsync(User.Identity.Name);
+                AppUser user = await userManager.FindByNameAsync(User.Identity.Name);
+
+                if (userPicture!=null && userPicture.Length>0 )
+                {
+                    var fileName = Guid.NewGuid().ToString()+Path.GetExtension(userPicture.FileName);
+                    var path=Path.Combine(Directory.GetCurrentDirectory(),"wwwroot/UserPictures",fileName);
+
+                    using (var stream =new FileStream(path,FileMode.Create))
+                    {
+                        await userPicture.CopyToAsync(stream);
+                        user.Picture = "/UserPicture/"+ fileName;
+                    }
+                }
+
+
                 user.UserName= userViewModel.UserName;
                 user.Email= userViewModel.Email;
                 user.PhoneNumber= userViewModel.PhoneNumber;
+                user.City=userViewModel.City;
+                user.BirthDay= userViewModel.BirthDay;
+                user.Gender = (int)userViewModel.Gender;
 
                 IdentityResult result =  await userManager.UpdateAsync(user);
 
