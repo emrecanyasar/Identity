@@ -15,26 +15,23 @@ using System.IO;
 namespace UdemyIdentity.Controllers
 {
     [Authorize]
-    public class MemberController : Controller
+    public class MemberController : BaseController
     {
-        public UserManager<AppUser> userManager { get; set; }
-        public SignInManager<AppUser> signInManager { get; set; }
-
-        public MemberController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+       
+        public MemberController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager) : base(userManager, signInManager)
         {
-            this.userManager = userManager;
-            this.signInManager = signInManager;
+
         }
         public IActionResult Index()
         {
-            AppUser user = userManager.FindByNameAsync(User.Identity.Name).Result;
+            AppUser user = CurrentUser;
             UserViewModel userViewModel =user.Adapt<UserViewModel>();
             return View(userViewModel);
         }
 
         public IActionResult UserEdit()
         {
-            AppUser user=userManager.FindByNameAsync(User.Identity.Name).Result;
+            AppUser user = CurrentUser;
 
 
             UserViewModel userViewModel=user.Adapt<UserViewModel>();
@@ -51,7 +48,7 @@ namespace UdemyIdentity.Controllers
 
             if (ModelState.IsValid)
             {
-                AppUser user = await userManager.FindByNameAsync(User.Identity.Name);
+                AppUser user = CurrentUser;
 
                 if (userPicture!=null && userPicture.Length>0 )
                 {
@@ -84,10 +81,7 @@ namespace UdemyIdentity.Controllers
                 }
                 else
                 {
-                    foreach (var item in result.Errors)
-                    {
-                        ModelState.AddModelError("", item.Description);
-                    }
+                    AddModelError(result);
                 }
             }
             return View(userViewModel);
@@ -102,7 +96,7 @@ namespace UdemyIdentity.Controllers
         {
             if (ModelState.IsValid)
             {
-                AppUser user = userManager.FindByNameAsync(User.Identity.Name).Result;
+                AppUser user = CurrentUser;
 
                 bool exist = userManager.CheckPasswordAsync(user, passwordChangeViewModel.PasswordOld).Result;
 
@@ -121,10 +115,7 @@ namespace UdemyIdentity.Controllers
                     }
                     else
                     {
-                        foreach (var item in result.Errors)
-                        {
-                            ModelState.AddModelError("", item.Description);
-                        }
+                        AddModelError(result);
                     }
                 }
                 else
@@ -139,6 +130,11 @@ namespace UdemyIdentity.Controllers
         public void LogOut()
         {
             signInManager.SignOutAsync();
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

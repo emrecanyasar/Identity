@@ -35,7 +35,7 @@ namespace UdemyIdentity1
             });
             
 
-            services.AddIdentity<AppUser, IdentityRole>(opts =>
+            services.AddIdentity<AppUser, AppRole>(opts =>
             {
                 opts.User.RequireUniqueEmail = true;
                 opts.User.AllowedUserNameCharacters = "abcçdefgðhýijklmnoöpqrsþtuüvwxyzABCDEFGÐHIÝJKLMNOÖPQRSÞTUÜVWXYZ0123456789-._";
@@ -65,6 +65,7 @@ namespace UdemyIdentity1
                 opts.Cookie = cookieBuilder;
                 opts.SlidingExpiration = true;
                 opts.ExpireTimeSpan=System.TimeSpan.FromDays(60);
+                opts.AccessDeniedPath = new PathString("/Member/AccessDenied");
             });
 
             services.AddMvc(options => options.EnableEndpointRouting = false);

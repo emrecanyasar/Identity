@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using UdemyIdentity.Controllers;
 using UdemyIdentity.Helper;
 using UdemyIdentity.Models;
 
@@ -9,15 +10,14 @@ using UdemyIdentity.ViewModels;
 
 namespace UdemyIdentity1.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
-        public UserManager<AppUser> userManager { get; set; }
-        public SignInManager<AppUser> signInManager { get; set; }
+        protected UserManager<AppUser> userManager { get; set; }
+        protected SignInManager<AppUser> signInManager { get; set; }
       
-        public HomeController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+        public HomeController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager):base(userManager,signInManager)
         {
-            this.userManager = userManager;
-            this.signInManager = signInManager;
+
         }
 
         public IActionResult Index()
@@ -105,10 +105,7 @@ namespace UdemyIdentity1.Controllers
                 }
                 else
                 {
-                    foreach (IdentityError item in result.Errors)
-                    {
-                        ModelState.AddModelError("", item.Description);
-                    }
+                    AddModelError(result);
                 }
             }
             return View(userViewModel);
