@@ -32,7 +32,7 @@ namespace UdemyIdentity.Controllers
             }
             else
             {
-                    AddModelError(result);
+                AddModelError(result);
             }
             return View(roleViewModel);
         }
@@ -46,6 +46,16 @@ namespace UdemyIdentity.Controllers
         public IActionResult Users()
         {
             return View(userManager.Users.ToList());
+        }
+
+        public IActionResult RoleDelete(string id)
+        {
+            AppRole role = roleManager.FindByIdAsync(id).Result;
+            if (role != null)
+            {
+                IdentityResult result = roleManager.DeleteAsync(role).Result;
+            }
+            return RedirectToAction("Roles");
         }
     }
 }
