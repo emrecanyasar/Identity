@@ -4,6 +4,9 @@ using System.Linq;
 using UdemyIdentity.Models;
 using UdemyIdentity.ViewModels;
 using Mapster;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
 namespace UdemyIdentity.Controllers
 {
     public class AdminController : BaseController
@@ -71,7 +74,7 @@ namespace UdemyIdentity.Controllers
         public IActionResult RoleUpdate(RoleViewModel roleViewModel)
         {
             AppRole role = roleManager.FindByIdAsync(roleViewModel.Id).Result;
-            if (role!=null)
+            if (role != null)
             {
                 role.Name = roleViewModel.Name;
                 IdentityResult result = roleManager.UpdateAsync(role).Result;
@@ -90,7 +93,60 @@ namespace UdemyIdentity.Controllers
             }
             return View(roleViewModel);
         }
-        public IActionResult RoleAssign
+        public IActionResult RoleAssign(string id)
+        {
+            TempData["userId"] = id;
+
+            AppUser user = userManager.FindByIdAsync(id).Result;
+           
+            ViewBag.userName = user.UserName;
+            
+            IQueryable<AppRole> roles = roleManager.Roles; 
+            
+            List<string> userroles = userManager.GetRolesAsync(user).Result as List<string>;
+
+            List<RoleAssignViewModel> roleAssignViewModels = new List<RoleAssignViewModel>();
+           
+            foreach (var role in roles)
+            {
+                RoleAssignViewModel r = new RoleAssignViewModel();
+                r.RoleId = role.Id;
+                r.RoleName = role.Name;
+                if (userroles.Contains(role.Name))
+                {
+                    r.Exist = true;
+                }
+                else
+                {
+                    r.Exist = false;
+                }
+                roleAssignViewModels.Add(r);
+            }
+
+
+
+                return View(roleAssignViewModels);
+        }
+        [HttpPost]
+        public async Task<IActionResult> RoleAssign(List<RoleAssignViewModel> roleAssignViewModels)
+        {
+            AppUser user = userManager.FindByIdAsync(TempData["userId"].ToString()).Result;
+
+            foreach (var item in roleAssignViewModels)
+            {
+                if (item.Exist)
+
+                {
+                    await userManager.AddToRoleAsync(user, item.RoleName);
+                }
+                else
+                {
+                    await userManager.RemoveFromRoleAsync(user, item.RoleName);
+                }
+            }
+
+            return RedirectToAction("Users");
+        }
 
     }
 }
