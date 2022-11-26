@@ -12,8 +12,7 @@ namespace UdemyIdentity1.Controllers
 {
     public class HomeController : BaseController
     {
-        protected UserManager<AppUser> userManager { get; set; }
-        protected SignInManager<AppUser> signInManager { get; set; }
+        
       
         public HomeController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager):base(userManager,signInManager)
         {
